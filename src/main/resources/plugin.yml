@@ -3,3 +3,5 @@ version: ${project.version}
 main: org.lushplugins.bluemapbordermask.BlueMapBorderMask
 api-version: '1.21'
 github-repo: RegrowthMC/BlueMapBorderMask
+depends:
+  - BlueMap

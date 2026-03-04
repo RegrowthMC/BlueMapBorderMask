@@ -12,6 +12,8 @@ repositories {
     mavenCentral()
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.papermc.io/repository/maven-public/") // Paper
+    maven("https://repo.lushplugins.org/snapshots/") // LushLib
+    maven("https://repo.bluecolored.de/releases") // BlueMap
 }
 
 dependencies {
@@ -19,8 +21,11 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
 
     // Soft Dependencies
+    compileOnly("de.bluecolored:bluemap-api:2.7.7")
+    compileOnly("de.bluecolored:bluemap-common:5.16")
 
     // Libraries
+    implementation("org.lushplugins:LushLib:0.10.89")
 }
 
 java {
@@ -60,6 +65,7 @@ tasks {
         minecraftVersion("1.21.11")
 
         downloadPlugins {
+            modrinth("bluemap", "5.16-paper")
             modrinth("viaversion", "5.7.1")
             modrinth("viabackwards", "5.7.1")
         }

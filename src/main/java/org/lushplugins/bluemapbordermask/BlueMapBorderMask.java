@@ -9,7 +9,6 @@ import org.lushplugins.bluemapbordermask.mask.WorldBorderMaskConfig;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public final class BlueMapBorderMask extends SpigotPlugin {
     private static BlueMapBorderMask plugin;

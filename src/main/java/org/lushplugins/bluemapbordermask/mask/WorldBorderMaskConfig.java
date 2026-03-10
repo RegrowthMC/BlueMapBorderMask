@@ -27,15 +27,24 @@ public class WorldBorderMaskConfig extends MaskConfig {
                     """.trim());
         }
 
+        ModifiableBoxMask mask;
         World world = Bukkit.getWorld(this.world);
-        WorldBorder border = world.getWorldBorder();
-        Location center = border.getCenter();
-        int radius = (int) (border.getSize() / 2);
+        if (world == null) {
+            // We return a full mask if the world is not currently loaded, this will then be updated when the world loads
+            mask = new ModifiableBoxMask(
+                new Vector3i(Integer.MIN_VALUE, this.minY, Integer.MIN_VALUE),
+                new Vector3i(Integer.MAX_VALUE, this.maxY, Integer.MAX_VALUE)
+            );
+        } else {
+            WorldBorder border = world.getWorldBorder();
+            Location center = border.getCenter();
+            int radius = (int) (border.getSize() / 2);
 
-        ModifiableBoxMask mask = new ModifiableBoxMask(
-            new Vector3i(center.getBlockX() - radius, this.minY, center.getBlockZ() - radius),
-            new Vector3i(center.getBlockX() + radius, this.maxY, center.getBlockZ() + radius)
-        );
+            mask = new ModifiableBoxMask(
+                new Vector3i(center.getBlockX() - radius, this.minY, center.getBlockZ() - radius),
+                new Vector3i(center.getBlockX() + radius, this.maxY, center.getBlockZ() + radius)
+            );
+        }
 
         BlueMapBorderMask.getInstance().setMask(this.world, mask);
         return mask;

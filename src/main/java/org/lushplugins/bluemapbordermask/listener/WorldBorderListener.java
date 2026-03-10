@@ -1,25 +1,49 @@
 package org.lushplugins.bluemapbordermask.listener;
 
-import de.bluecolored.bluemap.api.BlueMapAPI;
-import de.bluecolored.bluemap.common.api.BlueMapAPIImpl;
-import de.bluecolored.bluemap.common.rendermanager.MapUpdatePreparationTask;
-import de.bluecolored.bluemap.common.rendermanager.RenderManager;
-import de.bluecolored.bluemap.common.rendermanager.TileUpdateStrategy;
-import de.bluecolored.bluemap.core.map.BmMap;
 import io.papermc.paper.event.world.border.WorldBorderBoundsChangeEvent;
+import io.papermc.paper.event.world.border.WorldBorderBoundsChangeFinishEvent;
+import io.papermc.paper.event.world.border.WorldBorderCenterChangeEvent;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.joml.Vector3i;
 import org.lushplugins.bluemapbordermask.BlueMapBorderMask;
 import org.lushplugins.bluemapbordermask.mask.ModifiableBoxMask;
+import org.lushplugins.bluemapbordermask.util.BlueMapHelper;
 
 public class WorldBorderListener implements Listener {
 
+    private void updateWorldBorderMask(String worldName, ModifiableBoxMask mask, Location center, int newRadius) {
+        mask.min(new Vector3i(center.getBlockX() - newRadius, mask.min().y(), center.getBlockZ() - newRadius));
+        mask.max(new Vector3i(center.getBlockX() + newRadius, mask.max().y(), center.getBlockZ() + newRadius));
+
+        BlueMapHelper.scheduledRenderTask(worldName);
+    }
+
+    private void updateWorldBorderMask(World world) {
+        String worldName = world.getName();
+        ModifiableBoxMask mask = BlueMapBorderMask.getInstance().getMask(worldName);
+        if (mask == null) {
+            return;
+        }
+
+        WorldBorder border = world.getWorldBorder();
+        Location center = border.getCenter();
+        int newRadius = (int) (border.getSize() / 2);
+
+        updateWorldBorderMask(worldName, mask, center, newRadius);
+    }
+
     @EventHandler
-    public void onWorldBorder(WorldBorderBoundsChangeEvent event) {
+    public void onWorldLoad(WorldLoadEvent event) {
+        updateWorldBorderMask(event.getWorld());
+    }
+
+    @EventHandler
+    public void onWorldBorderChange(WorldBorderBoundsChangeEvent event) {
         World world = event.getWorld();
         String worldName = world.getName();
         ModifiableBoxMask mask = BlueMapBorderMask.getInstance().getMask(worldName);
@@ -31,20 +55,16 @@ public class WorldBorderListener implements Listener {
         Location center = border.getCenter();
         int newRadius = (int) (event.getNewSize() / 2);
 
-        mask.min(new Vector3i(center.getBlockX() - newRadius, mask.min().y(), center.getBlockZ() - newRadius));
-        mask.max(new Vector3i(center.getBlockX() + newRadius, mask.max().y(), center.getBlockZ() + newRadius));
+        updateWorldBorderMask(worldName, mask, center, newRadius);
+    }
 
-        BlueMapAPI.getInstance().ifPresent(api -> {
-            BlueMapAPIImpl apiImpl = (BlueMapAPIImpl) api;
+    @EventHandler
+    public void onWorldBorderChangeFinish(WorldBorderBoundsChangeFinishEvent event) {
+        updateWorldBorderMask(event.getWorld());
+    }
 
-            RenderManager renderManager = apiImpl.plugin().getRenderManager();
-            BmMap map = apiImpl.blueMapService().getMaps().get(worldName);
-
-            renderManager.scheduleRenderTask(MapUpdatePreparationTask.updateMap(
-                map,
-                TileUpdateStrategy.FORCE_EDGE,
-                renderManager
-            ));
-        });
+    @EventHandler
+    public void onWorldBorderCenterChange(WorldBorderCenterChangeEvent event) {
+        updateWorldBorderMask(event.getWorld());
     }
 }

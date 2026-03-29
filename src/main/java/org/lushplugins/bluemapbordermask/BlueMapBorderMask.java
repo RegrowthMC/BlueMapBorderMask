@@ -4,8 +4,8 @@ import de.bluecolored.bluemap.common.config.mask.MaskType;
 import de.bluecolored.bluemap.core.util.Key;
 import org.lushplugins.bluemapbordermask.listener.WorldBorderListener;
 import org.lushplugins.bluemapbordermask.mask.ModifiableBoxMask;
-import org.lushplugins.lushlib.plugin.SpigotPlugin;
 import org.lushplugins.bluemapbordermask.mask.WorldBorderMaskConfig;
+import org.lushplugins.lushlib.utils.plugin.SpigotPlugin;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -22,7 +22,7 @@ dependencies {
 
     // Soft Dependencies
     compileOnly("de.bluecolored:bluemap-api:2.7.8")
-    compileOnly("de.bluecolored:bluemap-common:5.16")
+    compileOnly("de.bluecolored:bluemap-common:5.22")
 
     // Libraries
     implementation("org.lushplugins:LushLib:1.0.0")

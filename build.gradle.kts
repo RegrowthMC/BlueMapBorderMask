@@ -25,7 +25,7 @@ dependencies {
     compileOnly("de.bluecolored:bluemap-common:5.16")
 
     // Libraries
-    implementation("org.lushplugins:LushLib:1.0.0")
+    implementation("org.lushplugins:LushLib:1.0.1")
 }
 
 java {

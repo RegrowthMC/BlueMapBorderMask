@@ -21,7 +21,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
 
     // Soft Dependencies
-    compileOnly("de.bluecolored:bluemap-api:2.7.8")
+    compileOnly("de.bluecolored:bluemap-api:2.8.0")
     compileOnly("de.bluecolored:bluemap-common:5.16")
 
     // Libraries
